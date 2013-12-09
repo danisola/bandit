@@ -19,7 +19,7 @@ public class Ucb1Algorithm extends AbstractBanditAlgorithm {
 
         double[] ucbValues = new double[numArms];
         for (int i = 0; i < numArms; i++) {
-            double bonus = Math.sqrt(2 * Math.log(totalCount / counts[i]));
+            double bonus = Math.sqrt((2 * Math.log(totalCount)) / counts[i]);
             ucbValues[i] = values[i] + bonus;
         }
 
