@@ -1,9 +1,8 @@
 package com.danisola.bandit.testframework.gui;
 
-import com.danisola.bandit.*;
+import com.danisola.bandit.BanditAlgorithm;
 import com.danisola.bandit.testframework.TestRunner;
 import com.danisola.bandit.testframework.arms.Arm;
-import com.danisola.bandit.testframework.arms.BernoulliArm;
 import com.danisola.bandit.testframework.scorers.AverageRewardScorer;
 import com.danisola.bandit.testframework.scorers.BestArmSelectedScorer;
 import com.danisola.bandit.testframework.scorers.CumulativeRewardScorer;
@@ -35,22 +34,11 @@ public class MainDialog {
     private JLabel armsLabel;
     private JPanel algorithmsPanel;
 
-    public MainDialog() {
-        arms = new Arm[]{
-                new BernoulliArm(0.01),
-                new BernoulliArm(0.02),
-                new BernoulliArm(0.01)
-        };
-        printArms();
+    public MainDialog(Arm[] arms, BanditAlgorithm[] algorithms) {
+        this.arms = arms;
+        this.algorithms = algorithms;
 
-        int numArms = arms.length;
-        AverageUpdateStrategy updateStrategy = new AverageUpdateStrategy();
-        algorithms = new BanditAlgorithm[]{
-                new EpsilonGreedyAlgorithm(numArms, 0.01, updateStrategy),
-                new EpsilonGreedyAlgorithm(numArms, 0.1, updateStrategy),
-                new SoftmaxAlgorithm(numArms, 0.1, updateStrategy),
-                new Ucb1Algorithm(numArms, updateStrategy)
-        };
+        printArms();
         printAlgorithms();
 
         configureChart(averageChart);
@@ -101,6 +89,7 @@ public class MainDialog {
         averageChart.removeAllTraces();
         bestChart.removeAllTraces();
         cumulativeChart.removeAllTraces();
+        resetAlgorithms();
 
         int numDraws = Integer.parseInt(horizonTextField.getText());
 
@@ -118,6 +107,12 @@ public class MainDialog {
                     new ChartPrinter(cumulativeTrace, new CumulativeRewardScorer())
             );
             executor.execute(new TestRunner(arms, numDraws, algorithm, printers));
+        }
+    }
+
+    private void resetAlgorithms() {
+        for (BanditAlgorithm algorithm : algorithms) {
+            algorithm.reset();
         }
     }
 

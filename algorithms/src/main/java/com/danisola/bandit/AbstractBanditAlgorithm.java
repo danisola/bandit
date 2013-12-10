@@ -22,5 +22,13 @@ public abstract class AbstractBanditAlgorithm implements BanditAlgorithm {
         values[arm] = updateStrategy.update(counts[arm], values[arm], reward);;
     }
 
+    @Override
+    public void reset() {
+        for (int i = 0; i < counts.length; i++) {
+            counts[i] = 0;
+            values[i] = 0;
+        }
+    }
+
     public abstract String toString();
 }
