@@ -16,12 +16,11 @@ public class Main {
         };
 
         int numArms = arms.length;
-        AverageUpdateStrategy updateStrategy = new AverageUpdateStrategy();
         BanditAlgorithm[] algorithms = new BanditAlgorithm[]{
-                new EpsilonGreedyAlgorithm(numArms, 0.01, updateStrategy),
-                new EpsilonGreedyAlgorithm(numArms, 0.1, updateStrategy),
-                new SoftmaxAlgorithm(numArms, 0.1, updateStrategy),
-                new Ucb1Algorithm(numArms, updateStrategy)
+                new EpsilonGreedyAlgorithm(numArms, 0.01),
+                new EpsilonGreedyAlgorithm(numArms, 0.1),
+                new SoftmaxAlgorithm(numArms, 0.1),
+                new Ucb1Algorithm(numArms)
         };
 
         JFrame frame = new JFrame("Bandit Algorithms - Test framework");

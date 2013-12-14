@@ -10,8 +10,8 @@ public class EpsilonGreedyAlgorithm extends AbstractBanditAlgorithm {
     private final double epsilon;
     private final Random random = new Random();
 
-    public EpsilonGreedyAlgorithm(int numArms, double epsilon, UpdateStrategy updateStrategy) {
-        super(numArms, updateStrategy);
+    public EpsilonGreedyAlgorithm(int numArms, double epsilon) {
+        super(numArms);
         this.epsilon = epsilon;
     }
 

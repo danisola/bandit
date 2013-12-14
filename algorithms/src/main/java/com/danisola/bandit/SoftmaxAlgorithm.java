@@ -7,8 +7,8 @@ public class SoftmaxAlgorithm extends AbstractBanditAlgorithm {
     private final Random random = new Random();
     private final double temperature;
 
-    public SoftmaxAlgorithm(int numArms, double temperature, UpdateStrategy updateStrategy) {
-        super(numArms, updateStrategy);
+    public SoftmaxAlgorithm(int numArms, double temperature) {
+        super(numArms);
         this.temperature = temperature;
     }
 

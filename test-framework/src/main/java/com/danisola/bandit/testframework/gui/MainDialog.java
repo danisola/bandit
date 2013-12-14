@@ -59,10 +59,10 @@ public class MainDialog {
 
     private void printArms() {
         StringBuilder sb = new StringBuilder();
-        sb.append(arms[0].getP());
+        sb.append(arms[0].getExpectedValue());
         for (int i = 1; i < arms.length; i++) {
             sb.append(" - ");
-            sb.append(arms[i].getP());
+            sb.append(arms[i].getExpectedValue());
         }
         armsLabel.setText(sb.toString());
     }

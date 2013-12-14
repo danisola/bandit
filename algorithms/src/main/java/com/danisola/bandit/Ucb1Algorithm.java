@@ -2,8 +2,8 @@ package com.danisola.bandit;
 
 public class Ucb1Algorithm extends AbstractBanditAlgorithm {
 
-    public Ucb1Algorithm(int numArms, UpdateStrategy updateStrategy) {
-        super(numArms, updateStrategy);
+    public Ucb1Algorithm(int numArms) {
+        super(numArms);
     }
 
     @Override

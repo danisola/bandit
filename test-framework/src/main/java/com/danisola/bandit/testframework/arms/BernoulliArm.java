@@ -23,7 +23,7 @@ public class BernoulliArm implements Arm {
     }
 
     @Override
-    public double getP() {
+    public double getExpectedValue() {
         return p;
     }
 }

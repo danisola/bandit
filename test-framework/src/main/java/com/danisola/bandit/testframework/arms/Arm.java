@@ -4,5 +4,5 @@ public interface Arm {
 
     public double draw();
 
-    public double getP();
+    public double getExpectedValue();
 }

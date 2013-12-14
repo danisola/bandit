@@ -7,9 +7,9 @@ public abstract class AbstractBanditAlgorithm implements BanditAlgorithm {
     protected final int numArms;
     protected final int[] counts;
     protected final double[] values;
-    protected final UpdateStrategy updateStrategy;
+    protected UpdateStrategy updateStrategy = new AverageUpdateStrategy();
 
-    public AbstractBanditAlgorithm(int numArms, UpdateStrategy updateStrategy) {
+    public AbstractBanditAlgorithm(int numArms) {
         this.numArms = numArms;
         this.counts = new int[numArms];
         this.values = new double[numArms];
@@ -28,6 +28,10 @@ public abstract class AbstractBanditAlgorithm implements BanditAlgorithm {
             counts[i] = 0;
             values[i] = 0;
         }
+    }
+
+    public void setUpdateStrategy(UpdateStrategy updateStrategy) {
+        this.updateStrategy = checkNotNull(updateStrategy);
     }
 
     public abstract String toString();

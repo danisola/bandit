@@ -30,12 +30,12 @@ public class BestArmSelectedScorer implements Scorer {
     private List<Integer> getBestArms() {
         List<Integer> bestArms = new ArrayList<>(arms.length);
         bestArms.add(0);
-        double bestP = arms[0].getP();
+        double bestP = arms[0].getExpectedValue();
         for (int i = 1; i < arms.length; i++) {
             Arm arm = arms[i];
-            if (arm.getP() == bestP) {
+            if (arm.getExpectedValue() == bestP) {
                 bestArms.add(i);
-            } else if (arm.getP() > bestP) {
+            } else if (arm.getExpectedValue() > bestP) {
                 bestArms.clear();
                 bestArms.add(i);
             }
