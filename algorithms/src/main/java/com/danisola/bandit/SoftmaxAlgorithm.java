@@ -2,6 +2,8 @@ package com.danisola.bandit;
 
 import java.util.Random;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 public class SoftmaxAlgorithm extends AbstractBanditAlgorithm {
 
     private final Random random = new Random();
@@ -9,6 +11,8 @@ public class SoftmaxAlgorithm extends AbstractBanditAlgorithm {
 
     public SoftmaxAlgorithm(int numArms, double temperature) {
         super(numArms);
+
+        checkArgument(temperature >= 0 && temperature <= 1, "Temperature must be between 0 and 1");
         this.temperature = temperature;
     }
 

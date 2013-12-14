@@ -3,33 +3,36 @@ package com.danisola.bandit;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
- * {@link com.danisola.bandit.BanditAlgorithm} that chooses a random lever with epsilon-frequency,
- * and otherwise chooses the lever with the highest estimated mean, based on the rewards observed thus far.
+ * {@link com.danisola.bandit.BanditAlgorithm} that chooses a random lever during the first epsilon draws
+ * (exploration phase), and the lever with the highest estimated mean after that (exploitation phase).
  *
  * http://en.wikipedia.org/wiki/Multi-armed_bandit#Semi-uniform_strategies
  */
-public class EpsilonGreedyAlgorithm extends AbstractBanditAlgorithm {
+public class EpsilonFirstAlgorithm extends AbstractBanditAlgorithm {
 
-    private final double epsilon;
     private final Random random = new Random();
+    private final int epsilon;
+    private int currentDraw;
 
-    public EpsilonGreedyAlgorithm(int numArms, double epsilon) {
+    public EpsilonFirstAlgorithm(int numArms, int epsilon) {
         super(numArms);
 
-        checkArgument(epsilon >= 0 && epsilon <= 1, "Epsilon must be between 0 and 1");
+        checkState(epsilon >= 0, "Epsilon must be equals or larger than 0");
         this.epsilon = epsilon;
     }
 
     @Override
     public int selectArm() {
-        if (random.nextDouble() > epsilon) {
-            return getArmWithHigherValue();
+        currentDraw++;
+
+        if (currentDraw <= epsilon) {
+            return random.nextInt(counts.length);
         }
 
-        return random.nextInt(counts.length);
+        return getArmWithHigherValue();
     }
 
     private int getArmWithHigherValue() {
@@ -53,6 +56,6 @@ public class EpsilonGreedyAlgorithm extends AbstractBanditAlgorithm {
 
     @Override
     public String toString() {
-        return "EpsilonGreedy {epsilon=" + epsilon + "}";
+        return "EpsilonFirst {epsilon=" + epsilon + "}";
     }
 }
