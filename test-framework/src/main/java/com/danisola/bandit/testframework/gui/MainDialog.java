@@ -23,7 +23,6 @@ import javafx.stage.WindowEvent;
 
 import java.awt.*;
 import java.net.URL;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
@@ -53,7 +52,6 @@ public class MainDialog implements Initializable, EventHandler<WindowEvent> {
     protected void startSimulation(ActionEvent actionEvent) {
         int numDraws = Integer.parseInt((String) horizonComboBox.getValue());
         resetTest(numDraws, Lists.newArrayList(averageRewardChart, bestArmChart, cumulativeRewardChart));
-        System.out.println(new Date());
         for (int i = 0; i < algorithms.size(); i++) {
             BanditAlgorithm algorithm = algorithms.get(i);
             String color = Colors.getRgbColor(i);

@@ -5,7 +5,6 @@ import javafx.application.Platform;
 import javafx.scene.chart.XYChart;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ChartPrinter {
@@ -26,9 +25,6 @@ public class ChartPrinter {
     }
 
     public void print() {
-        Platform.runLater(() -> {
-            series.getData().addAll(data);
-            System.out.println(new Date());
-        });
+        Platform.runLater(() -> series.getData().addAll(data));
     }
 }
