@@ -37,8 +37,8 @@ public class Main extends Application {
         primaryStage.setTitle("Bandit Algorithms - Test framework");
         primaryStage.setMinWidth(minWidth);
         primaryStage.setMinHeight(minHeight);
-        Scene scene = new Scene(fxmlLoader.load(), minWidth, minHeight);
-        primaryStage.setScene(scene);
+        primaryStage.setOnCloseRequest(mainDialog::handle);
+        primaryStage.setScene(new Scene(fxmlLoader.load(), minWidth, minHeight));
         primaryStage.show();
     }
 

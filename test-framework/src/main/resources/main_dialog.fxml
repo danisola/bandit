@@ -37,7 +37,7 @@
             </ComboBox>
           </labelFor>
         </Label>
-        <fx:reference source="horizonComboBox" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+        <fx:reference source="horizonComboBox"  GridPane.columnIndex="1" GridPane.rowIndex="0"/>
         <Label text="Arms:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
         <Label fx:id="armsLabel" text="" GridPane.columnIndex="1" GridPane.rowIndex="1" />
         <Pane GridPane.columnIndex="0" GridPane.rowIndex="2">
@@ -67,28 +67,28 @@
         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
       </rowConstraints>
     </GridPane>
-    <LineChart fx:id="averageRewardChart" createSymbols="false" legendVisible="false" title="Average Reward Earned" verticalGridLinesVisible="false" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.vgrow="ALWAYS">
+    <LineChart fx:id="averageRewardChart" animated="false" createSymbols="false" legendVisible="false" title="Average Reward Earned" verticalGridLinesVisible="false" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.vgrow="ALWAYS">
       <xAxis>
         <NumberAxis autoRanging="false" minorTickVisible="false" side="BOTTOM" />
       </xAxis>
       <yAxis>
-        <NumberAxis side="LEFT" />
+        <NumberAxis animated="false" side="LEFT" upperBound="1.0" />
       </yAxis>
     </LineChart>
-    <LineChart fx:id="bestArmChart" createSymbols="false" legendVisible="false" title="Best Arm Selected Percentage" verticalGridLinesVisible="false" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
+    <LineChart fx:id="bestArmChart" animated="false" createSymbols="false" legendVisible="false" title="Best Arm Selected Percentage" verticalGridLinesVisible="false" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
       <xAxis>
         <NumberAxis autoRanging="false" minorTickVisible="false" side="BOTTOM" />
       </xAxis>
       <yAxis>
-        <NumberAxis autoRanging="false" side="LEFT" tickUnit="0.5" upperBound="1.0" />
+        <NumberAxis autoRanging="false" side="LEFT" tickUnit="0.2" upperBound="1.0" />
       </yAxis>
     </LineChart>
-    <LineChart fx:id="cumulativeRewardChart" createSymbols="false" legendVisible="false" title="Cumulative Reward" verticalGridLinesVisible="false" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
+    <LineChart fx:id="cumulativeRewardChart" animated="false" createSymbols="false" legendVisible="false" title="Cumulative Reward" verticalGridLinesVisible="false" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
       <xAxis>
         <NumberAxis autoRanging="false" minorTickVisible="false" side="BOTTOM" />
       </xAxis>
       <yAxis>
-        <NumberAxis side="LEFT" />
+        <NumberAxis animated="false" side="LEFT" />
       </yAxis>
     </LineChart>
   </children>

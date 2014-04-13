@@ -8,6 +8,7 @@ import com.danisola.bandit.testframework.scorers.CumulativeRewardScorer;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
@@ -18,16 +19,21 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.WindowEvent;
 
 import java.awt.*;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static javafx.scene.paint.Color.rgb;
 
-public class MainDialog implements Initializable {
+public class MainDialog implements Initializable, EventHandler<WindowEvent> {
 
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final List<Arm> arms;
     private final List<BanditAlgorithm> algorithms;
 
@@ -47,7 +53,7 @@ public class MainDialog implements Initializable {
     protected void startSimulation(ActionEvent actionEvent) {
         int numDraws = Integer.parseInt((String) horizonComboBox.getValue());
         resetTest(numDraws, Lists.newArrayList(averageRewardChart, bestArmChart, cumulativeRewardChart));
-
+        System.out.println(new Date());
         for (int i = 0; i < algorithms.size(); i++) {
             BanditAlgorithm algorithm = algorithms.get(i);
             String color = Colors.getRgbColor(i);
@@ -56,22 +62,24 @@ public class MainDialog implements Initializable {
             XYChart.Series<Number, Number> averageRewardSeries = series(averageRewardChart, color);
             XYChart.Series<Number, Number> cumulativeSeries = series(cumulativeRewardChart, color);
 
-            List<ChartPrinter> printers = Lists.newArrayList(
-                    new ChartPrinter(numDraws, new AverageRewardScorer(), averageRewardSeries),
-                    new ChartPrinter(numDraws, new BestArmSelectedScorer(arms), bestArmSeries),
-                    new ChartPrinter(numDraws, new CumulativeRewardScorer(), cumulativeSeries));
+            executor.execute(() -> {
+                List<ChartPrinter> printers = Lists.newArrayList(
+                        new ChartPrinter(numDraws, new AverageRewardScorer(), averageRewardSeries),
+                        new ChartPrinter(numDraws, new BestArmSelectedScorer(arms), bestArmSeries),
+                        new ChartPrinter(numDraws, new CumulativeRewardScorer(), cumulativeSeries));
 
-            for (int draw = 0; draw < numDraws; draw++) {
-                int selectedArm = algorithm.selectArm();
-                double reward = arms.get(selectedArm).draw();
-                algorithm.update(selectedArm, reward);
+                for (int draw = 0; draw < numDraws; draw++) {
+                    int selectedArm = algorithm.selectArm();
+                    double reward = arms.get(selectedArm).draw();
+                    algorithm.update(selectedArm, reward);
 
-                for (ChartPrinter printer : printers) {
-                    printer.update(draw + 1, selectedArm, reward);
+                    for (ChartPrinter printer : printers) {
+                        printer.update(draw + 1, selectedArm, reward);
+                    }
                 }
-            }
 
-            printers.forEach(ChartPrinter::print);
+                printers.forEach(ChartPrinter::print);
+            });
         }
     }
 
@@ -110,5 +118,10 @@ public class MainDialog implements Initializable {
             Label label = new Label(algorithm.toString());
             algorithmsPane.add(label, 1, i);
         }
+    }
+
+    @Override
+    public void handle(WindowEvent windowEvent) {
+        executor.shutdown();
     }
 }

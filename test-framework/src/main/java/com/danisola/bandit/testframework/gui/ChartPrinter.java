@@ -1,9 +1,11 @@
 package com.danisola.bandit.testframework.gui;
 
 import com.danisola.bandit.testframework.scorers.Scorer;
+import javafx.application.Platform;
 import javafx.scene.chart.XYChart;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ChartPrinter {
@@ -24,6 +26,9 @@ public class ChartPrinter {
     }
 
     public void print() {
-        series.getData().addAll(data);
+        Platform.runLater(() -> {
+            series.getData().addAll(data);
+            System.out.println(new Date());
+        });
     }
 }
