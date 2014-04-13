@@ -10,7 +10,9 @@ public class Colors {
         new Color(99, 156, 208),
         new Color(240, 169, 100),
         new Color(149, 112, 170),
-        new Color(195, 119, 94)
+        new Color(195, 119, 94),
+        new Color(114, 114, 114),
+        new Color(204, 139, 180)
     };
 
     public static Color getColor(Integer num) {
