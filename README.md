@@ -16,7 +16,7 @@ If you want to change the algorithms or arms used in the test, download the code
 
 You require the following:
 
-* Latest stable  JDK 7
+* Latest stable JDK 8
 * Latest stable Apache Maven
 
 Download the code and do `mvn clean package`. To run the test framework just do `java -jar test-framework/target/testframework.jar`.

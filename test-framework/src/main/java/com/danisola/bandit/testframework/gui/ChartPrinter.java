@@ -1,20 +1,29 @@
 package com.danisola.bandit.testframework.gui;
 
 import com.danisola.bandit.testframework.scorers.Scorer;
-import info.monitorenter.gui.chart.ITrace2D;
+import javafx.scene.chart.XYChart;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChartPrinter {
 
-    private final ITrace2D trace;
     private final Scorer scorer;
+    private final List<XYChart.Data<Number, Number>> data;
+    private final XYChart.Series<Number, Number> series;
 
-    public ChartPrinter(ITrace2D trace, Scorer scorer) {
-        this.trace = trace;
+    public ChartPrinter(int numDraws, Scorer scorer, XYChart.Series<Number, Number> series) {
+        this.data = new ArrayList<>(numDraws);
         this.scorer = scorer;
+        this.series = series;
     }
 
     public void update(int draw, int selectedArm, double reward) {
         double score = scorer.updateScore(draw, selectedArm, reward);
-        trace.addPoint(draw, score);
+        data.add(new XYChart.Data<>(draw, score));
+    }
+
+    public void print() {
+        series.getData().addAll(data);
     }
 }

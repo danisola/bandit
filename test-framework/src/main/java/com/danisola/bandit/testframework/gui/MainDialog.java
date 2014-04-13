@@ -7,119 +7,108 @@ import com.danisola.bandit.testframework.scorers.BestArmSelectedScorer;
 import com.danisola.bandit.testframework.scorers.CumulativeRewardScorer;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import info.monitorenter.gui.chart.Chart2D;
-import info.monitorenter.gui.chart.ITrace2D;
-import info.monitorenter.gui.chart.traces.Trace2DSimple;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
 
-import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import java.util.ResourceBundle;
 
-public class MainDialog {
+import static javafx.scene.paint.Color.rgb;
 
-    private final Executor executor;
+public class MainDialog implements Initializable {
+
     private final List<Arm> arms;
     private final List<BanditAlgorithm> algorithms;
 
-    private JPanel root;
-    private Chart2D averageChart;
-    private Chart2D bestChart;
-    private Chart2D cumulativeChart;
-    private JButton startButton;
-    private JTextPane horizonTextField;
-    private JLabel armsLabel;
-    private JPanel algorithmsPanel;
+    @FXML private LineChart<Number, Number> averageRewardChart;
+    @FXML private LineChart<Number, Number> bestArmChart;
+    @FXML private LineChart<Number, Number> cumulativeRewardChart;
+    @FXML private ComboBox horizonComboBox;
+    @FXML private Label armsLabel;
+    @FXML private GridPane algorithmsPane;
 
     public MainDialog(Arm[] arms, BanditAlgorithm[] algorithms) {
         this.arms = Lists.newArrayList(arms);
         this.algorithms = Lists.newArrayList(algorithms);
-        this.executor = Executors.newFixedThreadPool(algorithms.length);
-
-        printArms();
-        printAlgorithms();
-
-        configureChart(averageChart);
-        configureChart(bestChart);
-        configureChart(cumulativeChart);
-
-        startButton.addActionListener(e -> runSimulation());
     }
 
-    public JPanel getRoot() {
-        return root;
-    }
-
-    private void printArms() {
-        armsLabel.setText(Joiner.on(" - ").join(Lists.transform(arms, Arm::getExpectedValue)));
-    }
-
-    private void printAlgorithms() {
-        algorithmsPanel.setLayout(new BoxLayout(algorithmsPanel, BoxLayout.Y_AXIS));
-        for (int i = 0; i < algorithms.size(); i++) {
-            BanditAlgorithm algorithm = algorithms.get(i);
-            JPanel colorPanel = new JPanel();
-            colorPanel.setMinimumSize(new Dimension(10, 10));
-            colorPanel.setMaximumSize(new Dimension(10, 10));
-            colorPanel.setBackground(Colors.getColor(i));
-
-            JLabel label = new JLabel(algorithm.toString());
-            Box algorithmPanel = Box.createHorizontalBox();
-            algorithmPanel.add(colorPanel);
-            algorithmPanel.add(label);
-            algorithmPanel.add(Box.createHorizontalGlue());
-            algorithmsPanel.add(algorithmPanel);
-        }
-    }
-
-    private void runSimulation() {
-        resetTest();
-
-        int numDraws = Integer.parseInt(horizonTextField.getText());
+    @FXML
+    protected void startSimulation(ActionEvent actionEvent) {
+        int numDraws = Integer.parseInt((String) horizonComboBox.getValue());
+        resetTest(numDraws, Lists.newArrayList(averageRewardChart, bestArmChart, cumulativeRewardChart));
 
         for (int i = 0; i < algorithms.size(); i++) {
             BanditAlgorithm algorithm = algorithms.get(i);
-            Color color = Colors.getColor(i);
+            String color = Colors.getRgbColor(i);
 
-            ITrace2D bestArmTrace = newTrace(bestChart, color);
-            ITrace2D averageRewardTrace = newTrace(averageChart, color);
-            ITrace2D cumulativeTrace = newTrace(cumulativeChart, color);
+            XYChart.Series<Number, Number> bestArmSeries = series(bestArmChart, color);
+            XYChart.Series<Number, Number> averageRewardSeries = series(averageRewardChart, color);
+            XYChart.Series<Number, Number> cumulativeSeries = series(cumulativeRewardChart, color);
 
             List<ChartPrinter> printers = Lists.newArrayList(
-                    new ChartPrinter(averageRewardTrace, new AverageRewardScorer()),
-                    new ChartPrinter(bestArmTrace, new BestArmSelectedScorer(arms)),
-                    new ChartPrinter(cumulativeTrace, new CumulativeRewardScorer()));
+                    new ChartPrinter(numDraws, new AverageRewardScorer(), averageRewardSeries),
+                    new ChartPrinter(numDraws, new BestArmSelectedScorer(arms), bestArmSeries),
+                    new ChartPrinter(numDraws, new CumulativeRewardScorer(), cumulativeSeries));
 
-            executor.execute(() -> {
-                for (int draw = 0; draw < numDraws; draw++) {
-                    int selectedArm = algorithm.selectArm();
-                    double reward = arms.get(selectedArm).draw();
-                    algorithm.update(selectedArm, reward);
+            for (int draw = 0; draw < numDraws; draw++) {
+                int selectedArm = algorithm.selectArm();
+                double reward = arms.get(selectedArm).draw();
+                algorithm.update(selectedArm, reward);
 
-                    for (ChartPrinter printer : printers) {
-                        printer.update(draw + 1, selectedArm, reward);
-                    }
+                for (ChartPrinter printer : printers) {
+                    printer.update(draw + 1, selectedArm, reward);
                 }
-            });
+            }
+
+            printers.forEach(ChartPrinter::print);
         }
     }
 
-    private void resetTest() {
-        averageChart.removeAllTraces();
-        bestChart.removeAllTraces();
-        cumulativeChart.removeAllTraces();
+    private XYChart.Series<Number, Number> series(LineChart<Number, Number> chart, String color) {
+        XYChart.Series<Number, Number> series = new XYChart.Series<>();
+        chart.getData().add(series);
+        series.nodeProperty().get().setStyle("-fx-stroke-width: 1px; -fx-stroke: #" + color);
+        return series;
+    }
+
+    private void resetTest(int numDraws, List<LineChart<Number, Number>> charts) {
+        for (LineChart<Number, Number> chart : charts) {
+            chart.getData().clear();
+            NumberAxis xAxis = (NumberAxis) chart.getXAxis();
+            xAxis.setUpperBound(numDraws);
+            xAxis.setTickUnit(numDraws / 10);
+        }
+
         algorithms.forEach(BanditAlgorithm::reset);
     }
 
-    private ITrace2D newTrace(Chart2D chart, Color color) {
-        ITrace2D trace = new Trace2DSimple();
-        trace.setColor(color);
-        chart.addTrace(trace);
-        return trace;
-    }
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        armsLabel.setText(Joiner.on(" - ").join(Lists.transform(arms, Arm::getExpectedValue)));
 
-    private void configureChart(Chart2D chart) {
-        chart.setToolTipType(Chart2D.ToolTipType.VALUE_SNAP_TO_TRACEPOINTS);
+        for (int i = 0; i < algorithms.size(); i++) {
+            BanditAlgorithm algorithm = algorithms.get(i);
+            Pane colorPanel = new Pane();
+            colorPanel.setMinSize(10, 10);
+            colorPanel.setMaxSize(10, 10);
+            Color color = Colors.getColor(i);
+            Rectangle colorRectangle = new Rectangle(10, 10, rgb(color.getRed(), color.getGreen(), color.getBlue()));
+
+            algorithmsPane.add(colorRectangle, 0, i);
+
+            Label label = new Label(algorithm.toString());
+            algorithmsPane.add(label, 1, i);
+        }
     }
 }
