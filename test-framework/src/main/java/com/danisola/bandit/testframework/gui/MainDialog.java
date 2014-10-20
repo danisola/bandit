@@ -28,6 +28,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static com.danisola.bandit.testframework.gui.Colors.getRgbColor;
 import static javafx.scene.paint.Color.rgb;
 
 public class MainDialog implements Initializable, EventHandler<WindowEvent> {
@@ -39,7 +40,7 @@ public class MainDialog implements Initializable, EventHandler<WindowEvent> {
     @FXML private LineChart<Number, Number> averageRewardChart;
     @FXML private LineChart<Number, Number> bestArmChart;
     @FXML private LineChart<Number, Number> cumulativeRewardChart;
-    @FXML private ComboBox horizonComboBox;
+    @FXML private ComboBox<Integer> horizonComboBox;
     @FXML private Label armsLabel;
     @FXML private GridPane algorithmsPane;
 
@@ -50,11 +51,11 @@ public class MainDialog implements Initializable, EventHandler<WindowEvent> {
 
     @FXML
     protected void startSimulation(ActionEvent actionEvent) {
-        int numDraws = Integer.parseInt((String) horizonComboBox.getValue());
+        int numDraws = horizonComboBox.getValue();
         resetTest(numDraws, Lists.newArrayList(averageRewardChart, bestArmChart, cumulativeRewardChart));
         for (int i = 0; i < algorithms.size(); i++) {
             BanditAlgorithm algorithm = algorithms.get(i);
-            String color = Colors.getRgbColor(i);
+            Color color = Colors.getColor(i);
 
             XYChart.Series<Number, Number> bestArmSeries = series(bestArmChart, color);
             XYChart.Series<Number, Number> averageRewardSeries = series(averageRewardChart, color);
@@ -81,10 +82,10 @@ public class MainDialog implements Initializable, EventHandler<WindowEvent> {
         }
     }
 
-    private XYChart.Series<Number, Number> series(LineChart<Number, Number> chart, String color) {
+    private XYChart.Series<Number, Number> series(LineChart<Number, Number> chart, Color color) {
         XYChart.Series<Number, Number> series = new XYChart.Series<>();
         chart.getData().add(series);
-        series.nodeProperty().get().setStyle("-fx-stroke-width: 1px; -fx-stroke: #" + color);
+        series.nodeProperty().get().setStyle("-fx-stroke-width: 1px; -fx-stroke: #" + getRgbColor(color));
         return series;
     }
 

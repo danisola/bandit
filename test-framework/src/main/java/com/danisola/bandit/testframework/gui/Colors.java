@@ -19,8 +19,7 @@ public class Colors {
         return colors[num % colors.length];
     }
 
-    public static String getRgbColor(Integer num) {
-        Color color = colors[num % colors.length];
+    public static String getRgbColor(Color color) {
         String rgb = Integer.toHexString(color.getRGB());
         return rgb.substring(2, rgb.length());
     }

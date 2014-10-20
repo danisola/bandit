@@ -19,21 +19,24 @@
       <children>
         <Label text="Horizon:" GridPane.columnIndex="0" GridPane.rowIndex="0">
           <labelFor>
-            <ComboBox fx:id="horizonComboBox" value="4000">
+            <ComboBox fx:id="horizonComboBox">
               <items>
                 <FXCollections fx:factory="observableArrayList">
-                  <String fx:value="1000" />
-                  <String fx:value="2000" />
-                  <String fx:value="3000" />
-                  <String fx:value="4000" />
-                  <String fx:value="5000" />
-                  <String fx:value="6000" />
-                  <String fx:value="7000" />
-                  <String fx:value="8000" />
-                  <String fx:value="9000" />
-                  <String fx:value="10000" />
+                  <Integer fx:value="1000" />
+                  <Integer fx:value="2000" />
+                  <Integer fx:value="3000" />
+                  <Integer fx:value="4000" />
+                  <Integer fx:value="5000" />
+                  <Integer fx:value="6000" />
+                  <Integer fx:value="7000" />
+                  <Integer fx:value="8000" />
+                  <Integer fx:value="9000" />
+                  <Integer fx:value="10000" />
                 </FXCollections>
               </items>
+              <value>
+                <Integer fx:value="4000" />
+              </value>
             </ComboBox>
           </labelFor>
         </Label>
